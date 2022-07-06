@@ -61,7 +61,6 @@ namespace ChatRoomS
         public void getChatrooms()
         {
             ChatRooms.Items.Clear();
-
             MySqlCommand cmd = new MySqlCommand("SELECT * FROM Chatroom WHERE user1_id = " + user_id + " or user2_id = " + user_id, conn);
             MySqlDataReader dataReader = cmd.ExecuteReader();
             while (dataReader.Read())
