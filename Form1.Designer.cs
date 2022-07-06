@@ -99,7 +99,6 @@ namespace ChatRoomS
             | System.Windows.Forms.AnchorStyles.Right)));
             this.Chat.BackColor = System.Drawing.Color.White;
             this.Chat.Cursor = System.Windows.Forms.Cursors.Default;
-            this.Chat.Enabled = false;
             this.Chat.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F);
             this.Chat.ForeColor = System.Drawing.Color.Black;
             this.Chat.Location = new System.Drawing.Point(420, 87);
