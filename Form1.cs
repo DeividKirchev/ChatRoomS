@@ -99,18 +99,21 @@ namespace ChatRoomS
         private void setChat(int index)
         {
             //Chat.AppendText("1");
-            MySqlCommand cmd = new MySqlCommand("SELECT * FROM CHATROOM WHERE USER1_ID = " + index + " AND USER2_ID =" + user_id + " OR USER2_ID = " + index + " AND USER1_ID =" + user_id, conn);
+            MySqlCommand cmd = new MySqlCommand("SELECT * FROM CHATROOM WHERE (USER1_ID = " + index + " AND USER2_ID =" + user_id + ") OR (USER2_ID = " + index + " AND USER1_ID =" + user_id+")", conn);
             MySqlDataReader dataReader = cmd.ExecuteReader();
             if (!dataReader.Read())
             {
+               //Chat.AppendText(index+"");
                 dataReader.Close();
                 return;
             }
+            
             int croom_id = Int32.Parse(dataReader["id"].ToString());
+            //Chat.AppendText(cr_id + " - " + croom_id);
             if (cr_id == croom_id)
             {
                 dataReader.Close();
-                cmd = new MySqlCommand("SELECT * FROM MESSAGES WHERE CR_ID = " + cr_id + " AND timestampdiff(second,date,now()) <= 2  ORDER BY DATE ASC", conn);
+                cmd = new MySqlCommand("SELECT * FROM MESSAGES WHERE CR_ID = " + cr_id + " AND timestampdiff(second,date,now()) < 2 AND USER_id !="+user_id+ " ORDER BY DATE ASC", conn);
                 dataReader = cmd.ExecuteReader();
                 while (dataReader.Read())
                 {
@@ -121,6 +124,7 @@ namespace ChatRoomS
             }
             cr_id = croom_id;
             Chat.Clear();
+            
             //Chat.Text = chatroom_id.ToString();
             dataReader.Close();
             cmd = new MySqlCommand("SELECT * FROM MESSAGES WHERE CR_ID = " + cr_id + " ORDER BY DATE ASC", conn);
@@ -136,17 +140,20 @@ namespace ChatRoomS
             int pos = s.IndexOf('#');
             string s1 = s.Substring(pos + 1, 1);
             int num1 = Int32.Parse(s1);
+            
             if (num1 != user_id) return num1;
-
-            s.Remove(pos, 1);
+            
+            s=s.Remove(pos, 1);
             pos = s.IndexOf('#');
             s1 = s.Substring(pos + 1, 1);
             num1 = Int32.Parse(s1);
+            //Chat.AppendText(s);
             return num1;
 
         }
         private void ChatRooms_SelectedIndexChanged(object sender, EventArgs e)
         {
+            //Chat.AppendText("YES");
             if (ChatRooms.SelectedItem == null) return;
             selected_index = ChatRooms.SelectedIndex;
             int index;
@@ -160,7 +167,11 @@ namespace ChatRoomS
             if (textBox1.Text == null) return;
             Chat.AppendText("USER " + user_id + ": " + textBox1.Text + Environment.NewLine);
             //Chat.AppendText(DateTime.Now.ToString());
-            MySqlCommand cmd = new MySqlCommand("INSERT INTO MESSAGES(CR_ID,USER_ID,MESSAGE,DATE) VALUES(" + cr_id + "," + user_id + ",'" + textBox1.Text + "', str_to_date('" + DateTime.Now.ToShortDateString() + "','%d/%m/%Y %T'))", conn);
+            //Chat.AppendText(cr_id.ToString());
+            string date = DateTime.Now.Day + "/" + DateTime.Now.Month + "/"+ DateTime.Now.Year+" " + DateTime.Now.Hour + ":" + DateTime.Now.Minute+":"+ DateTime.Now.Second;
+            //date = date.Replace('-', '/');
+            MySqlCommand cmd = new MySqlCommand("INSERT INTO MESSAGES(CR_ID,USER_ID,MESSAGE,DATE) VALUES(" + cr_id + "," + user_id + ",'" + textBox1.Text + "', str_to_date('" + date + "','%d/%m/%Y %T'))", conn);
+
             cmd.ExecuteNonQuery();
             textBox1.Clear();
         }
