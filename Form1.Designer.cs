@@ -52,6 +52,7 @@ namespace ChatRoomS
             this.ChatRooms.Name = "ChatRooms";
             this.ChatRooms.Size = new System.Drawing.Size(371, 497);
             this.ChatRooms.TabIndex = 0;
+            this.ChatRooms.SelectedIndexChanged += new System.EventHandler(this.ChatRooms_SelectedIndexChanged);
             // 
             // label_id
             // 
